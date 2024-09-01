@@ -2,24 +2,31 @@ import React from "react";
 import MultiRangeSlider from "multi-range-slider-react";
 
 const Poste = ({
+	contract,
 	editableJob,
 	handleInputChange,
 	handleInputSalaryRange,
-	minSalary,
-	maxSalary,
 }) => {
 	return (
 		<div>
-			<div>
+			<div className="inputLine">
 				<label>Poste :</label>
 				<input
 					type="text"
 					name="poste"
-					value={editableJob.poste}
-					onChange={handleInputChange}
+					size={40}
+					value={contract.poste}
+					onChange={(e) =>
+						handleInputChange({
+							target: {
+								name: "contract.poste",
+								value: e.target.value,
+							},
+						})
+					}
 				/>
 			</div>
-			<div className="row">
+			<div className="row inputLine">
 				<div className="col">
 					<label>Type de contrat :</label>
 					<div>
@@ -28,8 +35,15 @@ const Poste = ({
 								type="radio"
 								name="contractType"
 								value="CDD"
-								checked={editableJob.contract.type === "CDD"}
-								onChange={handleInputChange}
+								checked={contract.type === "CDD"}
+								onChange={(e) =>
+									handleInputChange({
+										target: {
+											name: "contract.type",
+											value: e.target.value,
+										},
+									})
+								}
 							/>
 							CDD
 						</label>
@@ -40,8 +54,15 @@ const Poste = ({
 								type="radio"
 								name="contractType"
 								value="CDI"
-								checked={editableJob.contract.type === "CDI"}
-								onChange={handleInputChange}
+								checked={contract.type === "CDI"}
+								onChange={(e) =>
+									handleInputChange({
+										target: {
+											name: "contract.type",
+											value: e.target.value,
+										},
+									})
+								}
 							/>
 							CDI
 						</label>
@@ -52,8 +73,15 @@ const Poste = ({
 								type="radio"
 								name="contractType"
 								value="Alternance"
-								checked={editableJob.contract.type === "Alternance"}
-								onChange={handleInputChange}
+								checked={contract.type === "Alternance"}
+								onChange={(e) =>
+									handleInputChange({
+										target: {
+											name: "contract.type",
+											value: e.target.value,
+										},
+									})
+								}
 							/>
 							Alternance
 						</label>
@@ -65,10 +93,17 @@ const Poste = ({
 						<label>
 							<input
 								type="radio"
-								name="remote"
+								name="contract.remote"
 								value="full"
-								checked={editableJob.contract.remote === "full"}
-								onChange={handleInputChange}
+								checked={contract.remote === "full"}
+								onChange={(e) =>
+									handleInputChange({
+										target: {
+											name: "contract.remote",
+											value: e.target.value,
+										},
+									})
+								}
 							/>
 							Full
 						</label>
@@ -77,10 +112,17 @@ const Poste = ({
 						<label>
 							<input
 								type="radio"
-								name="remote"
+								name="contract.remote"
 								value="partial"
-								checked={editableJob.contract.remote === "partial"}
-								onChange={handleInputChange}
+								checked={contract.remote === "partial"}
+								onChange={(e) =>
+									handleInputChange({
+										target: {
+											name: "contract.remote",
+											value: e.target.value,
+										},
+									})
+								}
 							/>
 							Partial
 						</label>
@@ -89,30 +131,37 @@ const Poste = ({
 						<label>
 							<input
 								type="radio"
-								name="remote"
+								name="contract.remote"
 								value="no"
-								checked={editableJob.contract.remote === "no"}
-								onChange={handleInputChange}
+								checked={contract.remote === "no"}
+								onChange={(e) =>
+									handleInputChange({
+										target: {
+											name: "contract.remote",
+											value: e.target.value,
+										},
+									})
+								}
 							/>
 							No
 						</label>
 					</div>
 				</div>
 			</div>
-			<div>
+			<div className="inputLine">
 				<label>Salaire :</label>
 				<MultiRangeSlider
 					id={"salaryRange"}
-					min={15000}
+					min={25000}
 					max={50000}
 					step={500}
 					stepOnly={true}
-					minValue={minSalary || 15000}
-					maxValue={maxSalary || 50000}
+					minValue={contract.salary[0]}
+					maxValue={contract.salary[1]}
 					canMinMaxValueSame={true}
-					labels={["15k", "20k", "25k", "30k", "35k", "40k", "45k", "50k"]}
-                    style={{"border":"none","boxShadow":"none"}}
-                    barInnerColor="lightGrey"
+					labels={["25k", "30k", "35k", "40k", "45k", "50k"]}
+					style={{ border: "none", boxShadow: "none" }}
+					barInnerColor="lightGrey"
 					onInput={(e) => handleInputSalaryRange(e)}
 				/>
 			</div>

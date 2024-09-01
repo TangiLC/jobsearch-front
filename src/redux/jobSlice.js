@@ -3,7 +3,6 @@ import axios from 'axios';
 
 export const fetchJobs = createAsyncThunk('jobs/fetchJobs', async () => {
   const response = await axios.get('http://localhost:3003/api/get_jobs');
-  console.log(response.data)
   return response.data;
 });
 

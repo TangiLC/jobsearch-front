@@ -10,6 +10,16 @@ h1,
 h2 {
 	text-align: center;
 }
+h2{
+  margin-top:3px;
+  margin-bottom:3px;
+}
+input{
+  padding:3px;
+  border-radius:5px;
+
+}
+/*div {border:1px solid purple}*/
 
 .container {
 	width: 96%;
@@ -17,7 +27,7 @@ h2 {
 }
 
 .flex-container {
-	width: 96%;
+	/*width: 96%;*/
 	margin: auto;
 	display: flex;
 	flex-direction: row;
@@ -35,6 +45,11 @@ h2 {
 
 .card {
 	width: 32%;
+}
+
+.inputLine {
+  text-align:center;
+  padding: 5px 0px 5px 0px;
 }
 
 .multi-range-slider{

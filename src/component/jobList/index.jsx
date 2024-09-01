@@ -22,8 +22,8 @@ const JobList = () => {
 
 	const custom = {
 		columns: {
-			values:  customValues ,
-			width:  customWidth ,
+			values: customValues,
+			width: customWidth,
 		},
 		actionColumn: {
 			name: "Actions",
@@ -32,39 +32,41 @@ const JobList = () => {
 					icon: <ImEye />,
 					func: viewItem,
 					target: "id",
-					label: "delete",
+					label: "View",
 				},
 				{
 					icon: <ImPencil />,
 					func: deleteItem,
 					target: "id",
-					label: "delete",
+					label: "Edit",
 				},
 				{
 					icon: <ImBin />,
 					func: deleteItem,
 					target: "id",
-					label: "delete",
+					label: "Delete",
 				},
 			],
 		},
 	};
 
-	let answer = ["🔴", "🟡", "🟢"];
+	let answer = ["🔴", "🟡", "🟢","⭕"];
 	const data = jobs.map((job) => ({
 		id: job._id,
-		date: new Date(job.contract.apply).toLocaleDateString(),
+		date: new Date(job.apply.date).toLocaleDateString(),
 		company: job.company.name,
-		poste: job.poste,
+		poste: job.contract.poste,
 		contract: job.contract.type,
 		remote: job.contract.remote,
 		salary:
-			(job.salary?.value[0] ? `${job.salary.value[0]}€ - ` : "-") +
-			(job.salary?.value[1] ? `${job.salary.value[1]}€` : "-"),
-		adress: job.company.adress.city,
-		answer: job.answer
-			? `${new Date(job.answer.date).toLocaleDateString()} ${
-					job.answer.status === "rejected" ? answer[0] : answer[2]
+			(job.contract.salary?.[0] ? `${job.contract.salary[0]}€ - ` : "-") +
+			(job.contract.salary?.[1] ? `${job.contract.salary[1]}€` : "-"),
+		adress: job.company.city,
+		answer: job.apply.answer?.status
+			? `${job.apply.answer.date!==null?new Date(job.apply.answer.date).toLocaleDateString():""} ${
+					job.apply.answer.status === "rejected" ? answer[0] : 
+					job.apply.answer.status ==="deleted" ? answer[3]:
+					job.apply.answer.status ==="ok" ? answer[2]:answer[1]
 			  }`
 			: answer[1],
 	}));

@@ -2,52 +2,130 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Poste from "./Poste";
 import Company from "./Company";
-import Contact from "./Contact";
+import Apply from "./Apply";
+import ClearButton from "./ClearButton";
+import IframeProxy from "../IframeProxy";
 
 const ShowJob = () => {
-	const [selectedJob, setSelectedJob] = useState(null);
 	const [editableJob, setEditableJob] = useState(null);
-	const [minSalary, setMinSalary] = useState(25000);
-	const [maxSalary, setMaxSalary] = useState(45000);
+
+	const [company, setCompany] = useState({
+		name: "",
+		address: "",
+		cp: null,
+		city: "",
+		country: "",
+		contact: {
+			tel: "",
+			mail: "",
+		},
+	});
+
+	const [apply, setApply] = useState({
+		date: new Date(),
+		answer: {
+			status: "pending",
+			date: null,
+		},
+	});
+
+	const [contract, setContract] = useState({
+		poste: "",
+		type: null,
+		remote: "no",
+		salary: [25000, 45000],
+		url: "",
+	});
 
 	const dispatch = useDispatch();
 	const { loading, jobs, error } = useSelector((state) => state.jobs);
 	const id = useSelector((state) => state.jobId.value);
 
 	useEffect(() => {
-		const job = jobs.find((job) => job._id === id);
+		const job = jobs.find((job) => job._id === id) || {};
 		if (job) {
-			setMinSalary(job.salary?.value[0] || 25000);
-			setMaxSalary(job.salary?.value[1] || 45000);
-			setSelectedJob(job);
-			setEditableJob({
-				...job,
-				salary: {
-					...job.salary,
-					value: [job.salary?.value[0] || 25000, job.salary?.value[1] || 45000],
+			setCompany({
+				name: job.company?.name || "",
+				address: job.company?.address || "",
+				cp: job.company?.cp || "",
+				city: job.company?.city || "",
+				country: job.company?.country || "",
+				contact: {
+					tel: job.company?.contact?.tel || "",
+					mail: job.company?.contact?.mail || "",
 				},
+			});
+			setApply({
+				date: job.apply?.date || new Date(),
+				answer: {
+					status: job.apply?.answer?.status || "pending",
+					date: job.apply?.answer?.date || "",
+				},
+			});
+			setContract({
+				poste: job.contract?.poste || "",
+				type: job.contract?.type || "",
+				remote: job.contract?.remote || "",
+				salary: [
+					job.contract?.salary ? job.contract.salary[0] : 30000,
+					job.contract?.salary ? job.contract.salary[1] : 45000,
+				],
+				url: job.contract?.url || "",
 			});
 		}
 	}, [id, jobs]);
 
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
-		setEditableJob({
-			...editableJob,
-			[name]: value,
-		});
+		const [group, key, subkey] = name.split(".");
+
+		if (group === "company") {
+			setCompany((prevState) => ({
+				...prevState,
+				[key]: subkey ? { ...prevState[key], [subkey]: value } : value,
+			}));
+		} else if (group === "apply") {
+			setApply((prevState) => ({
+				...prevState,
+				[key]: subkey ? { ...prevState[key], [subkey]: value } : value,
+			}));
+		} else if (group === "contract") {
+			setContract((prevState) => ({
+				...prevState,
+				[key]: subkey ? { ...prevState[key], [subkey]: value } : value,
+			}));
+		}
 	};
 
-	const handleInputSalaryRange = (e) => {
-		setMinSalary(e.minSalary);
-		setMaxSalary(e.maxSalary);
-		const newSalary = [...editableJob.salary.value];
-		newSalary[0] = e.minSalary;
-		newSalary[1] = e.maxSalary;
+	useEffect(() => {
 		setEditableJob({
-			...editableJob,
-			salary: { ...editableJob.salary, value: newSalary },
+			contract: {
+				poste: contract.jobName,
+				type: contract.type,
+				remote: contract.remote,
+				salary: [contract.salary.min, contract.salary.max],
+				url: contract.url,
+			},
+			company: {
+				name: company.name,
+				address: company.address,
+				cp: company.cp,
+				city: company.city,
+				country: company.country,
+				contact: { tel: company.contact.tel, mail: company.contact.mail },
+			},
+			apply: {
+				date: apply.date,
+				answer: { date: apply.answer.date, status: apply.answer.status },
+			},
 		});
+	}, [company, apply, contract]);
+
+	const handleInputSalaryRange = (e) => {
+		setContract((prevState) => ({
+			...prevState,
+			salary: [e.minValue, e.maxValue],
+		}));
 	};
 
 	return (
@@ -59,22 +137,46 @@ const ShowJob = () => {
 					<div className="flex-container">
 						<div className="card">
 							<Company
+								company={company}
 								editableJob={editableJob}
 								handleInputChange={handleInputChange}
 							/>
-							<Contact
+							<Apply
+								apply={apply}
 								editableJob={editableJob}
 								handleInputChange={handleInputChange}
 							/>
 						</div>
 						<div className="card">
 							<Poste
+								contract={contract}
 								editableJob={editableJob}
 								handleInputChange={handleInputChange}
 								handleInputSalaryRange={handleInputSalaryRange}
-								minSalary={minSalary}
-								maxSalary={maxSalary}
 							/>
+							<ClearButton />
+						</div>
+						<div className="card">
+							<div className="inputLine">
+								<label>url :</label>
+								<input
+									type="text"
+									name="contract.address"
+									size={50}
+									value={contract.url || ""}
+									onChange={(e) =>
+										handleInputChange({
+											target: {
+												name: "contract.url",
+												value: e.target.value,
+											},
+										})
+									}
+								/>
+							</div>
+							<div className="inputLine" style={{minHeight:"15rem"}}>
+								<IframeProxy url={contract.url || ""} scale={0.75} />
+							</div>
 						</div>
 					</div>
 				</>
