@@ -13,17 +13,36 @@ const formatDateToLocal = (isoDate) => {
 const Apply = ({ apply, editableJob, handleInputChange }) => {
 	return (
 		<div>
-			<div className="inputLine">
-				<label>Postulé le :</label>
-				<input
-					type="date"
-					name="apply.date"
-					value={apply.date ? formatDateToLocal(apply.date) : null}
-					onChange={handleInputChange}
-				/>
+			<div className="flex-container">
+				<div
+					className="inputLine"
+					style={{ width: "48%", textAlign: "center" }}
+				>
+					<label>Postulé le :</label>
+					<input
+						type="date"
+						name="apply.date"
+						value={apply.date ? formatDateToLocal(apply.date) : null}
+						onChange={handleInputChange}
+					/>
+				</div>
+				<div
+					className="inputLine"
+					style={{ width: "48%", textAlign: "center" }}
+				><label>Relancé le :</label>
+					<input
+						type="date"
+						name="apply.repeat"
+						value={apply.repeat ? formatDateToLocal(apply.repeat) : null}
+						onChange={handleInputChange}
+					/>
+				</div>
 			</div>
 			<div className="flex-container">
-				<div className="inputLine" style={{ width: "48%", textAlign: "center" }}>
+				<div
+					className="inputLine"
+					style={{ width: "48%", textAlign: "center" }}
+				>
 					<select
 						name="apply.answer.status"
 						value={apply.answer.status}
@@ -35,7 +54,10 @@ const Apply = ({ apply, editableJob, handleInputChange }) => {
 						<option value="deleted">⭕ Annonce supprimée</option>
 					</select>
 				</div>
-				<div className="inputLine" style={{ width: "48%", textAlign: "center" }}>
+				<div
+					className="inputLine"
+					style={{ width: "48%", textAlign: "center" }}
+				>
 					<input
 						type="date"
 						name="apply.answer.date"

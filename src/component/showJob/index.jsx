@@ -5,9 +5,11 @@ import Company from "./Company";
 import Apply from "./Apply";
 import ClearButton from "./ClearButton";
 import IframeProxy from "../IframeProxy";
+import SaveButton from "./SaveButton";
 
 const ShowJob = () => {
 	const [editableJob, setEditableJob] = useState(null);
+	const [allRequiredFields, setAllRequiredFields] = useState(false);
 
 	const [company, setCompany] = useState({
 		name: "",
@@ -57,6 +59,7 @@ const ShowJob = () => {
 			});
 			setApply({
 				date: job.apply?.date || new Date(),
+				repeat: job.apply?.repeat || "",
 				answer: {
 					status: job.apply?.answer?.status || "pending",
 					date: job.apply?.answer?.date || "",
@@ -73,7 +76,31 @@ const ShowJob = () => {
 				url: job.contract?.url || "",
 			});
 		}
+		validateForm();
 	}, [id, jobs]);
+
+	const validateForm = () => {
+		const isFormValid =
+			company.name.trim() !== "" &&
+			company.city.trim() !== "" &&
+			company.country.trim() !== "" &&
+			contract.poste.trim() !== "" &&
+			contract.type.trim() !== "" &&
+			contract.remote.trim() !== "" &&
+			contract.url.trim() !== "" &&
+			apply.date !== null;
+
+		const saveButton = document.querySelector(".save_button");
+		if (saveButton) {
+			if (isFormValid) {
+				saveButton.classList.remove("inactive");
+				setAllRequiredFields(true);
+			} else {
+				saveButton.classList.add("inactive");
+				setAllRequiredFields(false);
+			}
+		}
+	};
 
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
@@ -87,7 +114,14 @@ const ShowJob = () => {
 		} else if (group === "apply") {
 			setApply((prevState) => ({
 				...prevState,
-				[key]: subkey ? { ...prevState[key], [subkey]: value } : value,
+				[key]: subkey
+					? {
+							...prevState[key],
+							[subkey]: key === "date" ? new Date(value).toISOString() : value,
+					  }
+					: key === "date"
+					? new Date(value).toISOString()
+					: value,
 			}));
 		} else if (group === "contract") {
 			setContract((prevState) => ({
@@ -100,10 +134,10 @@ const ShowJob = () => {
 	useEffect(() => {
 		setEditableJob({
 			contract: {
-				poste: contract.jobName,
+				poste: contract.poste,
 				type: contract.type,
 				remote: contract.remote,
-				salary: [contract.salary.min, contract.salary.max],
+				salary: [contract.salary[0], contract.salary[1]],
 				url: contract.url,
 			},
 			company: {
@@ -116,15 +150,17 @@ const ShowJob = () => {
 			},
 			apply: {
 				date: apply.date,
+				repeat: apply.repeat,
 				answer: { date: apply.answer.date, status: apply.answer.status },
 			},
 		});
+		validateForm();
 	}, [company, apply, contract]);
 
-	const handleInputSalaryRange = (e) => {
+	const handleInputSalaryRange = (min, max) => {
 		setContract((prevState) => ({
 			...prevState,
-			salary: [e.minValue, e.maxValue],
+			salary: [min, max],
 		}));
 	};
 
@@ -154,7 +190,19 @@ const ShowJob = () => {
 								handleInputChange={handleInputChange}
 								handleInputSalaryRange={handleInputSalaryRange}
 							/>
-							<ClearButton />
+							<br />
+							<div className="flex-container">
+								<div style={{ width: "45%", textAlign: "center" }}>
+									<ClearButton />
+								</div>
+								<div style={{ width: "45%", textAlign: "center" }}>
+									<SaveButton
+										data={editableJob}
+										id={id}
+										allRequiredFields={allRequiredFields}
+									/>
+								</div>
+							</div>
 						</div>
 						<div className="card">
 							<div className="inputLine">
@@ -174,7 +222,7 @@ const ShowJob = () => {
 									}
 								/>
 							</div>
-							<div className="inputLine" style={{minHeight:"15rem"}}>
+							<div className="inputLine" style={{ minHeight: "15rem" }}>
 								<IframeProxy url={contract.url || ""} scale={0.75} />
 							</div>
 						</div>

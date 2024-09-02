@@ -10,17 +10,39 @@ h1,
 h2 {
 	text-align: center;
 }
-h2{
-  margin-top:3px;
-  margin-bottom:3px;
+h2 {
+	margin-top: 3px;
+	margin-bottom: 3px;
 }
-input{
-  padding:3px;
-  border-radius:5px;
-
+input {
+	padding: 3px;
+	border-radius: 5px;
 }
 /*div {border:1px solid purple}*/
+.button {
+	padding: 5px;
+	border-radius: 6px;
+	cursor:pointer;
+	text-align: center;
+	-webkit-box-shadow: 3px 3px 3px 0px grey, inset 2px 2px 8px 0px grey,
+		3px 3px 10px 3px rgba(0, 0, 0, 0);
+	box-shadow: 3px 3px 3px 0px grey, inset 2px 2px 8px 0px grey,
+  3px 3px 10px 3px rgba(0, 0, 0, 0);
+}
+.clear_button{
+  background-color: lightblue;
+}
+.save_button{
+  background-color: lightseagreen;
+}
+.save_button.inactive{
+  background-color: lightgrey;
+  cursor: not-allowed;
+}
 
+.button:hover{
+  filter: brightness(110%);
+}
 .container {
 	width: 96%;
 	margin: auto;
@@ -31,6 +53,7 @@ input{
 	margin: auto;
 	display: flex;
 	flex-direction: row;
+  justify-content: space-between;
 	gap: 1%;
 }
 
@@ -48,14 +71,14 @@ input{
 }
 
 .inputLine {
-  text-align:center;
-  padding: 5px 0px 5px 0px;
+	text-align: center;
+	padding: 5px 0px 5px 0px;
 }
 
-.multi-range-slider{
-  border:none;
-  width:90%;
-  margin:auto;
+.multi-range-slider {
+	border: none;
+	width: 90%;
+	margin: auto;
 }
 
 .multi-range-slider .thumb .caption * {
@@ -63,5 +86,4 @@ input{
 	border-radius: 5px;
 	color: white;
 	box-shadow: 0px 0px 2px black;
-
 }

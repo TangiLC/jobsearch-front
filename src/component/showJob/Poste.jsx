@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import MultiRangeSlider from "multi-range-slider-react";
 
 const Poste = ({
@@ -7,6 +7,19 @@ const Poste = ({
 	handleInputChange,
 	handleInputSalaryRange,
 }) => {
+	const [minVal, setMinVal] = useState(contract.salary[0] || 25000);
+	const [maxVal, setMaxVal] = useState(contract.salary[1] || 50000);
+	const handleInput = (e) => {
+		if (minVal !== e.minValue) {
+			setMinVal(e.minValue);
+			handleInputSalaryRange(e.minValue, maxVal);
+		}
+		if (maxVal !== e.maxValue) {
+			setMaxVal(e.maxValue);
+			handleInputSalaryRange(minVal, e.maxValue);
+		}
+	};
+
 	return (
 		<div>
 			<div className="inputLine">
@@ -156,13 +169,15 @@ const Poste = ({
 					max={50000}
 					step={500}
 					stepOnly={true}
-					minValue={contract.salary[0]}
-					maxValue={contract.salary[1]}
+					minValue={minVal}
+					maxValue={maxVal}
 					canMinMaxValueSame={true}
 					labels={["25k", "30k", "35k", "40k", "45k", "50k"]}
 					style={{ border: "none", boxShadow: "none" }}
 					barInnerColor="lightGrey"
-					onInput={(e) => handleInputSalaryRange(e)}
+					onInput={(e) => {
+						handleInput(e);
+					}}
 				/>
 			</div>
 		</div>
